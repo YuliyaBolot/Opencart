@@ -33,10 +33,7 @@ def get_api_token(get_api_key, base_url):
     фикстура, возвращающая API TOKEN
     """
     payload = f'username={Constants.ADMIN_LOGIN}&key={get_api_key}'
-    headers = {
-        'Content-Type': 'application/x-www-form-urlencoded'
-    }
-    response = requests.post(f"{base_url}/account/login", headers=headers, data=payload, verify=False)
+    response = requests.post(f"{base_url}/account/login", data=payload, verify=False)
     token = response.json()['api_token']
     return token
 
@@ -128,8 +125,5 @@ def conn_oc_cart(browser, base_url):
     with conn.cursor(buffered=True) as cursor:
         cursor.execute("SELECT cart_id, session_id FROM oc_cart")
         result = cursor.fetchone()
-        requests.post(f'{base_url}/sale/cart.remove&api_token={result[1]}', headers={
-            'Content-Type': 'application/x-www-form-urlencoded',
-            'Cookie': 'OCSESSID=9cfe1d648495e472f7d9f25d9b; currency=USD'
-        }, data=f'key={result[0]}', verify=False)
+        requests.post(f'{base_url}/sale/cart.remove&api_token={result[1]}', data=f'key={result[0]}', verify=False)
     conn.close()
